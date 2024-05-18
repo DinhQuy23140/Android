@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/totalLabel1"
+        android:layout_width="151dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="263dp"
+        android:layout_marginEnd="52dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="$0.00" />
+
+    <TextView
+        android:id="@+id/totalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="261dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="Total" />
+
+    <TextView
+        android:id="@+id/tipLabel1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="174dp"
+        android:layout_marginEnd="52dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="$0.00" />
+
+    <TextView
+        android:id="@+id/tipLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="175dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="Tip" />
+
+    <Button
+        android:id="@+id/percentDownButton"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="79dp"
+        android:layout_marginEnd="65dp"
+        android:width="20dp"
+        android:height="40dp"
+        android:backgroundTint="#00BCD4"
+        android:gravity="center"
+        android:text="-" />
+
+    <Button
+        android:id="@+id/percentUpButton"
+        android:layout_width="53dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="79dp"
+        android:layout_marginEnd="5dp"
+        android:width="20dp"
+        android:height="40dp"
+        android:backgroundTint="#00BCD4"
+        android:gravity="center"
+        android:text="+" />
+
+    <TextView
+        android:id="@+id/percentLabel1"
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="120dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="15%" />
+
+    <TextView
+        android:id="@+id/billAmountLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="Bill Amount" />
+
+    <TextView
+        android:id="@+id/percentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="82dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:gravity="center|start"
+        android:text="Percent" />
+
+    <EditText
+        android:id="@+id/editTextText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="55dp"
+        android:width="150dp"
+        android:height="40dp"
+        android:ems="10"
+        android:gravity="center|start"
+        android:inputType="text"
+        android:text="00" />
+
+</RelativeLayout>

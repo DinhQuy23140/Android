@@ -5,8 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,16 +21,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.loader.content.Loader;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TextWatcher {
     EditText edt_malop, edt_tenlop, edt_siso;
     Button btn_query, btn_insert, btn_edit, btn_delete;
     ListView lv_lophoc;
     ArrayAdapter<String> adapter;
     ArrayList<String> dslop;
     SQLiteDatabase db;
+    int pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +138,53 @@ public class MainActivity extends AppCompatActivity {
                 load_lisview();
             }
         });
+        edt_malop.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                search();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (edt_malop.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "empty ma lop", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        edt_tenlop.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (edt_tenlop.getText().toString().isEmpty()){
+                    Toast.makeText(MainActivity.this, "empty ten lop", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        lv_lophoc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                pos = position;
+                String value = dslop.get(pos);
+                String[] list = value.split("    ");
+                edt_malop.setText(list[0]);
+                edt_tenlop.setText(list[1]);
+                edt_siso.setText(list[2]);
+            }
+        });
     }
     public void load_lisview(){
         dslop.clear();
@@ -146,5 +198,36 @@ public class MainActivity extends AppCompatActivity {
         }
         cursor.close();
         adapter.notifyDataSetChanged();
+    }
+
+    public void search(){
+        dslop.clear();
+        String malop = edt_malop.getText().toString();git 
+        ContentValues values = new ContentValues();
+        values.put("malop", malop);
+        Cursor cursor = db.query("tblophoc", null, "malop = ?",new String[]{malop}, null, null, null);
+        cursor.moveToNext();
+        String data = "";
+        while (cursor.isAfterLast() == false){
+            data = cursor.getString(0) + "    " + cursor.getString(1) + "    " + cursor.getString(2);
+            dslop.add(data);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        search();
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
     }
 }

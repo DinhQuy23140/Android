@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     EditText edt_malop, edt_tenlop, edt_siso;
     Button btn_query, btn_insert, btn_edit, btn_delete;
     ListView lv_lophoc;
-    ArrayAdapter adapter;
+    ArrayAdapter<String> adapter;
     ArrayList<String> dslop;
     SQLiteDatabase db;
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         lv_lophoc = (ListView) findViewById(R.id.lv_lop);
         dslop = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dslop);
-
+        lv_lophoc.setAdapter(adapter);
         //tao va mo co so du lieu
         db = openOrCreateDatabase("quanlysinhvien.db", MODE_PRIVATE, null);
 
@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     msg = "Insert success";
                 }
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                load_lisview();
 
             }
         });
@@ -104,24 +105,46 @@ public class MainActivity extends AppCompatActivity {
                     msg = n + " record to update";
                 }
                 Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                load_lisview();
             }
         });
         btn_query.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dslop.clear();
-                Cursor cursor = db.query("tblophoc", null, null,null, null, null, null);
-                cursor.moveToNext();
-                String data = "";
-                while (cursor.isAfterLast() == false){
-                    data = cursor.getColumnName(0) + "    " + cursor.getColumnName(1) + "    " + cursor.getColumnName(2);
-                    dslop.add(data);
-                    cursor.moveToNext();
-                }
-                cursor.close();
-                adapter.notifyDataSetChanged();
+                load_lisview();
             }
         });
 
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String malop = edt_malop.getText().toString();
+                ContentValues values = new ContentValues();
+                values.put("malop", malop);
+                int n = db.delete("tblophoc", "malop = ?", new String[]{malop});
+                String msg;
+                if (n == 0){
+                    msg = "No record delete";
+                }
+                else{
+                    msg = n + " record delete";
+                }
+                Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                load_lisview();
+            }
+        });
+    }
+    public void load_lisview(){
+        dslop.clear();
+        Cursor cursor = db.query("tblophoc", null, null,null, null, null, null);
+        cursor.moveToNext();
+        String data = "";
+        while (cursor.isAfterLast() == false){
+            data = cursor.getString(0) + "    " + cursor.getString(1) + "    " + cursor.getString(2);
+            dslop.add(data);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        adapter.notifyDataSetChanged();
     }
 }

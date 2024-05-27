@@ -34,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     Button btn_view_add;
     Button btn_view_edit;
     Button btn_delete;
+    Button btn_search;
     int bookid;
+    String nameBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +66,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 bookid = position;
+                String value = listbook.getItemAtPosition(position).toString();
+                String[] values = value.split(" - ");
+                nameBook = values[0];
+                //Toast.makeText(MainActivity.this, nameBook, Toast.LENGTH_SHORT).show();
             }
         });
         btn_view_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, editBook.class);
-                intent.putExtra("BOOK_ID", bookid);
+                //intent.putExtra("BOOK_ID", bookid);
+                intent.putExtra("BOOK_NAME", nameBook);
                 startActivityForResult(intent, 99);
             }
         });
@@ -101,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
                         .show();
             }
         });
+        btn_search = (Button) findViewById(R.id.btn_search);
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -115,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
     public void LoadBook(){
         String header = "Title     Author     Tags";
         booklist = new ArrayList<>();
-        booklist.add(header);
         dbHelper = new DatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DatabaseHelper.TABLE_BOOKS, null, null,null, null, null, null);

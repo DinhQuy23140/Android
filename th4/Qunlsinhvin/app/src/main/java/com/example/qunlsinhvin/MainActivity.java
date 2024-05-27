@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -151,27 +152,37 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (edt_malop.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "empty ma lop", Toast.LENGTH_SHORT).show();
+            }
+        });
+        edt_malop.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    if(TextUtils.isEmpty(edt_malop.getText().toString())){
+                        Toast.makeText(MainActivity.this, "empty ma lop", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
-        edt_tenlop.addTextChangedListener(new TextWatcher() {
+        edt_tenlop.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edt_tenlop.getText().toString().isEmpty()){
-                    Toast.makeText(MainActivity.this, "empty ten lop", Toast.LENGTH_SHORT).show();
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    if(TextUtils.isEmpty(edt_tenlop.getText().toString())){
+                        Toast.makeText(MainActivity.this, "empty ten lop", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
+        });
 
+        edt_siso.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    if(TextUtils.isEmpty(edt_siso.getText().toString())){
+                        Toast.makeText(MainActivity.this, "empty si so lop", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
         lv_lophoc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -202,15 +213,18 @@ public class MainActivity extends AppCompatActivity implements TextWatcher {
 
     public void search(){
         dslop.clear();
-        String malop = edt_malop.getText().toString();git 
+        String malop = edt_malop.getText().toString();
         ContentValues values = new ContentValues();
         values.put("malop", malop);
-        Cursor cursor = db.query("tblophoc", null, "malop = ?",new String[]{malop}, null, null, null);
+        Cursor cursor = db.query("tblophoc", null, null, null, null, null, null);
         cursor.moveToNext();
         String data = "";
         while (cursor.isAfterLast() == false){
-            data = cursor.getString(0) + "    " + cursor.getString(1) + "    " + cursor.getString(2);
-            dslop.add(data);
+            String malop1 = cursor.getString(0);
+            if(malop1.toLowerCase().contains(malop.toLowerCase())){
+                data = cursor.getString(0) + "    " + cursor.getString(1) + "    " + cursor.getString(2);
+                dslop.add(data);
+            }
             cursor.moveToNext();
         }
         cursor.close();

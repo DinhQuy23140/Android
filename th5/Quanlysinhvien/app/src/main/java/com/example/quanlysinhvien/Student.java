@@ -4,7 +4,6 @@ public class Student {
     private String id, name, email;
 
     public Student(){
-
     }
 
     public Student(String id, String name, String email) {
@@ -36,6 +35,4 @@ public class Student {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 }

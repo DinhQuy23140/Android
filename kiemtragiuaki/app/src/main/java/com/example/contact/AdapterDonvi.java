@@ -13,6 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +38,8 @@ public class AdapterDonvi extends ArrayAdapter<Donvi> {
             convertView = LayoutInflater.from(context).inflate(R.layout.danhsachdonvi, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tv_name = convertView.findViewById(R.id.tv_tendonvi_view);
-            viewHolder.tv_sdt = convertView.findViewById(R.id.tv_phone_view);
-            viewHolder.tv_email = convertView.findViewById(R.id.tv_email_view);
+//            viewHolder.tv_sdt = convertView.findViewById(R.id.tv_phone_view);
+//            viewHolder.tv_email = convertView.findViewById(R.id.tv_email_view);
             viewHolder.img_logo = convertView.findViewById(R.id.img_logo_view);
             convertView.setTag(viewHolder);
         } else {
@@ -44,9 +48,14 @@ public class AdapterDonvi extends ArrayAdapter<Donvi> {
 
         Donvi currentItem = itemList.get(position);
         viewHolder.tv_name.setText(currentItem.getTendonvi());
-        viewHolder.tv_sdt.setText(currentItem.getSdt());
-        viewHolder.tv_email.setText(currentItem.getEmail());
-        viewHolder.img_logo.setImageBitmap(getImageView(currentItem.getLogo()));
+//        viewHolder.tv_sdt.setText(currentItem.getSdt());
+//        viewHolder.tv_email.setText(currentItem.getEmail());
+        Bitmap imageBitmap = getImageView(currentItem.getLogo());
+        Glide.with(context)
+                .load(imageBitmap) // Replace with your image source
+                .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                .into(viewHolder.img_logo);
+//        viewHolder.img_logo.setImageBitmap(getImageView(currentItem.getLogo()));
 
         return convertView;
     }

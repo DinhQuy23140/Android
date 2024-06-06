@@ -1,14 +1,41 @@
 package com.example.contact;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class editDonvi extends AppCompatActivity {
+    EditText edtmadonvi, edttendonvi, edtdiachi, edtdienthoai, edtemail, edtwebsite, edtmadonvicha;
+    ImageView imglogo;
+    TextView btnsave, btncancel, btndelete;
+    String endcodeedImage;
+    SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +47,134 @@ public class editDonvi extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        db = openOrCreateDatabase("contact.db", MODE_PRIVATE, null);
+
+        edtmadonvi = findViewById(R.id.tv_edit_madonvi);
+        edttendonvi = findViewById(R.id.tv_edit_tendonvi);
+        edtdiachi = findViewById(R.id.tv_edit_diachi);
+        edtdienthoai = findViewById(R.id.tv_edit_sdt);
+        edtemail = findViewById(R.id.tv_edit_email);
+        edtwebsite = findViewById(R.id.tv_edit_website);
+        edtmadonvicha = findViewById(R.id.av_edit_madonvicha);
+        imglogo = findViewById(R.id.iv_edit_avatar);
+        btnsave = findViewById(R.id.btn_edit_save);
+        btncancel = findViewById(R.id.btn_edit_cancel);
+        btndelete = findViewById(R.id.btn_edit_delete);
+
+
+        Intent intent = getIntent();
+        Bundle bundle = intent.getBundleExtra("Donvi");
+        if (bundle != null) {
+            String madonvi = bundle.getString("madonvi");
+            String tendonvi = bundle.getString("tendonvi");
+            String diachi = bundle.getString("diachi");
+            String dienthoai = bundle.getString("sdt");
+            String email = bundle.getString("email");
+            String website = bundle.getString("website");
+            String logo = bundle.getString("logo");
+            String madonvicha = bundle.getString("madonvicha");
+
+            edtmadonvi.setText(madonvi);
+            edttendonvi.setText(tendonvi);
+            edtdiachi.setText(diachi);
+            edtdienthoai.setText(dienthoai);
+            edtemail.setText(email);
+            edtwebsite.setText(website);
+            edtmadonvicha.setText(madonvicha);
+            Bitmap bitmap = getImageView(logo);
+            if (bitmap != null) {
+                //imglogo.setImageBitmap(bitmap);
+                //border imageview
+                Glide.with(editDonvi.this)
+                        .load(bitmap) // Replace with your image source
+                        .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                        .into(imglogo);
+            }
+        }
+
+        //change avatar event
+        imglogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                pickImage.launch(pickPhoto);
+            }
+        });
+
+        //save event
+
+        //cancel event
+        btncancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        //delete event
+        btndelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int n = db.delete("tb_donvi", "madonvi = ?", new String[]{edtmadonvi.getText().toString()});
+                if (n > 0) {
+                    Toast.makeText(editDonvi.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                    Intent viewDonvi = new Intent(editDonvi.this, DonViActivity.class);
+                    viewDonvi.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(viewDonvi);
+                }
+            }
+        });
+
     }
+
+    private Bitmap getImageView(String encodeImage) {
+        if (encodeImage == null || encodeImage.isEmpty()) {
+            // Trả về một hình ảnh mặc định hoặc null nếu encodeImage là null hoặc trống
+            return null;
+        }
+        byte[] bytes = Base64.decode(encodeImage, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    private String enCodeImage(Bitmap bitmap){
+        //set with
+        int previewWith = 150;
+        //set height
+        int previewHeight = bitmap.getHeight() * previewWith / bitmap.getWidth();
+        //scale image
+        Bitmap previewBitmap = Bitmap.createScaledBitmap(bitmap, previewWith, previewHeight, false);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        previewBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    private final ActivityResultLauncher<Intent> pickImage = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    if (result.getData() != null) {
+                        Uri imageuri = result.getData().getData();
+                        try {
+                            InputStream inputStream = getContentResolver().openInputStream(imageuri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                            //set img(bitmap)
+                            //imglogo.setImageBitmap(bitmap);
+                            Glide.with(editDonvi.this)
+                                    .load(bitmap) // Replace with your image source
+                                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                    .into(imglogo);
+                            //bitmap->string
+                            endcodeedImage = enCodeImage(bitmap);
+                        }
+                        catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }
+    );
 }

@@ -1,21 +1,28 @@
 package com.example.contact;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -26,16 +33,27 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class addDonVi extends AppCompatActivity {
-    EditText edt_madonvi, edt_tendonvi, edt_email, edt_website, edt_diachi, edt_sdt, edt_madonvicha;
+    EditText edt_madonvi, edt_tendonvi, edt_email, edt_website, edt_diachi, edt_sdt;
+    AutoCompleteTextView acv_madonvicha;
     ImageView img_logo;
+    TextView tv_add_img;
     Button btn_add_donvi;
     String endcodeedImage;
     SQLiteDatabase db;
+    ArrayList<String> options = new ArrayList<>();
+    ArrayAdapter<String> adapter;
+
+    Boolean checkselectimg = false;
 
 
     @Override
@@ -54,8 +72,9 @@ public class addDonVi extends AppCompatActivity {
         edt_website = (EditText) findViewById(R.id.edt_website);
         edt_diachi = (EditText) findViewById(R.id.edt_diachi);
         edt_sdt = (EditText) findViewById(R.id.edt_sdt);
-        edt_madonvicha = (EditText) findViewById(R.id.edt_madonvicha);
+        acv_madonvicha = (AutoCompleteTextView) findViewById(R.id.acv_madonvicha);
         img_logo = (ImageView) findViewById(R.id.img_logo);
+        tv_add_img = (TextView) findViewById(R.id.tv_add_img);
         btn_add_donvi = (Button) findViewById(R.id.btn_add_donvi);
 
         db = openOrCreateDatabase("contact.db", MODE_PRIVATE, null);
@@ -66,6 +85,26 @@ public class addDonVi extends AppCompatActivity {
             Log.e("Error", e.getMessage());
         }
 
+        Cursor cursor = db.rawQuery("SELECT madonvi FROM tb_donvi", null);
+        if (cursor.moveToFirst()) {
+            do {
+                String madonvi = cursor.getString(0);
+                options.add(madonvi);
+                Log.d("madonvi", madonvi);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
+        acv_madonvicha.setAdapter(adapter);
+        acv_madonvicha.setThreshold(1);
+
+        acv_madonvicha.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                acv_madonvicha.showDropDown();
+            }
+        });
+
         btn_add_donvi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,8 +114,14 @@ public class addDonVi extends AppCompatActivity {
                 String website = edt_website.getText().toString();
                 String diachi = edt_diachi.getText().toString();
                 String sdt = edt_sdt.getText().toString();
-                String madonvicha = edt_madonvicha.getText().toString();
-                String logo = endcodeedImage;
+                String madonvicha = acv_madonvicha.getText().toString();
+                String logo;
+                if(endcodeedImage == null){
+                    logo = vectorToBase64(addDonVi.this ,R.drawable.user_ic);
+                }
+                else{
+                    logo = endcodeedImage;
+                }
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("madonvi", madonvi);
                 contentValues.put("tendonvi", tendonvi);
@@ -92,6 +137,7 @@ public class addDonVi extends AppCompatActivity {
                 else{
                     showToast("Thêm đơn vị thành công");
                     Intent intent = new Intent(addDonVi.this, DonViActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
             }
@@ -105,6 +151,17 @@ public class addDonVi extends AppCompatActivity {
                 pickImage.launch(intent);
             }
         });
+
+        tv_add_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                pickImage.launch(intent);
+            }
+        });
+
+
     }
 
     public void showToast(String message) {
@@ -133,8 +190,14 @@ public class addDonVi extends AppCompatActivity {
                         try {
                             InputStream inputStream = getContentResolver().openInputStream(imageuri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                            img_logo.setImageBitmap(bitmap);
+                            //img_logo.setImageBitmap(bitmap);
                             endcodeedImage = enCodeImage(bitmap);
+                            //activity
+                            Glide.with(addDonVi.this)
+                                    .load(bitmap) // Replace with your image source
+                                    .apply(RequestOptions.bitmapTransform(new CircleCrop()))
+                                    //view
+                                    .into(img_logo);
                         }
                         catch (FileNotFoundException e) {
                             throw new RuntimeException(e);
@@ -143,6 +206,19 @@ public class addDonVi extends AppCompatActivity {
                 }
             }
     );
+    public String vectorToBase64(Context context, int vectorResourceId) {
+        VectorDrawable vectorDrawable = (VectorDrawable) context.getDrawable(vectorResourceId);
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
 
 //    private Bitmap rotateImage(Bitmap source, float angle) {
 //        Matrix matrix = new Matrix();
@@ -155,4 +231,5 @@ public class addDonVi extends AppCompatActivity {
 //        img_logo.setImageBitmap(rotatedBitmap);
 //        endcodeedImage = enCodeImage(rotatedBitmap);
 //    }
+
 }

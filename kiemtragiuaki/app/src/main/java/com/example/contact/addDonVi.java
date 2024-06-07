@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -52,8 +53,7 @@ public class addDonVi extends AppCompatActivity {
     SQLiteDatabase db;
     ArrayList<String> options = new ArrayList<>();
     ArrayAdapter<String> adapter;
-
-    Boolean checkselectimg = false;
+    Boolean checkselectimg = false, checkInput = true;
 
 
     @Override
@@ -66,6 +66,7 @@ public class addDonVi extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
         edt_madonvi = (EditText) findViewById(R.id.edt_madonvi);
         edt_tendonvi = (EditText) findViewById(R.id.edt_tendonvi);
         edt_email = (EditText) findViewById(R.id.edt_email);
@@ -77,26 +78,75 @@ public class addDonVi extends AppCompatActivity {
         tv_add_img = (TextView) findViewById(R.id.tv_add_img);
         btn_add_donvi = (Button) findViewById(R.id.btn_add_donvi);
 
+        //open database
         db = openOrCreateDatabase("contact.db", MODE_PRIVATE, null);
+
+        //create table
         try{
             String sql = "CREATE TABLE IF NOT EXISTS tb_donvi (madonvi TEXT PRIMARY KEY, tendonvi TEXT, email TEXT, website TEXT, diachi TEXT, sdt TEXT, madonvicha TEXT, logo TEXT)";
             db.execSQL(sql);
         }catch (Exception e){
-            Log.e("Error", e.getMessage());
+            Log.e("Error", "Error: " + e.getMessage());
         }
 
+        //get data from database
         Cursor cursor = db.rawQuery("SELECT madonvi FROM tb_donvi", null);
         if (cursor.moveToFirst()) {
             do {
                 String madonvi = cursor.getString(0);
+                //add data to arraylist
                 options.add(madonvi);
-                Log.d("madonvi", madonvi);
             } while (cursor.moveToNext());
+            //Toast.makeText(this, "Đã lấy dữ liệu: " + options.size(), Toast.LENGTH_SHORT).show();
         }
         cursor.close();
+
+        //set adapter
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, options);
         acv_madonvicha.setAdapter(adapter);
+        //set focus autoCompleteTextView
         acv_madonvicha.setThreshold(1);
+
+        //set event
+
+        //validation
+        edt_madonvi.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus && edt_madonvi.getText().toString().isEmpty()){
+                    showToast("Mã đơn vị không được để trống");
+                    checkInput = false;
+                }
+                else{
+                    checkInput = true;
+                }
+            }
+        });
+
+        edt_tendonvi.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus && edt_tendonvi.getText().toString().isEmpty()){
+                    showToast("Tên đơn vị không được trống");
+                    checkInput = false;
+                }
+                else{
+                    checkInput = true;
+                }
+            }
+        });
+
+
+        edt_sdt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus && (edt_sdt.getText().toString().isEmpty() || edt_sdt.getText().toString().length() < 10)){
+                    showToast("Số điện thoại không hợp lệ");
+                    checkInput = false;
+                }
+                else{checkInput = true;}
+            }
+        });
 
         acv_madonvicha.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -108,37 +158,43 @@ public class addDonVi extends AppCompatActivity {
         btn_add_donvi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String madonvi = edt_madonvi.getText().toString();
-                String tendonvi = edt_tendonvi.getText().toString();
-                String email = edt_email.getText().toString();
-                String website = edt_website.getText().toString();
-                String diachi = edt_diachi.getText().toString();
-                String sdt = edt_sdt.getText().toString();
-                String madonvicha = acv_madonvicha.getText().toString();
-                String logo;
-                if(endcodeedImage == null){
-                    logo = vectorToBase64(addDonVi.this ,R.drawable.user_ic);
+                if(checkInput){
+                    String madonvi = edt_madonvi.getText().toString();
+                    String tendonvi = edt_tendonvi.getText().toString();
+                    String email = edt_email.getText().toString();
+                    String website = edt_website.getText().toString();
+                    String diachi = edt_diachi.getText().toString();
+                    String sdt = edt_sdt.getText().toString();
+                    String madonvicha = acv_madonvicha.getText().toString();
+                    String logo;
+                    if(endcodeedImage == null){
+                        //vecto icon to string
+                        logo = layerDrawableToBase64(addDonVi.this ,R.drawable.user_ic);
+                    }
+                    else{
+                        logo = endcodeedImage;
+                    }
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put("madonvi", madonvi);
+                    contentValues.put("tendonvi", tendonvi);
+                    contentValues.put("email", email);
+                    contentValues.put("website", website);
+                    contentValues.put("diachi", diachi);
+                    contentValues.put("sdt", sdt);
+                    contentValues.put("madonvicha", madonvicha);
+                    contentValues.put("logo", logo);
+                    if(db.insert("tb_donvi", null, contentValues) == -1){
+                        showToast("Thêm đơn vị thất bại");
+                    }
+                    else{
+                        showToast("Thêm đơn vị thành công");
+                        Intent intent = new Intent(addDonVi.this, DonViActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    }
                 }
                 else{
-                    logo = endcodeedImage;
-                }
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("madonvi", madonvi);
-                contentValues.put("tendonvi", tendonvi);
-                contentValues.put("email", email);
-                contentValues.put("website", website);
-                contentValues.put("diachi", diachi);
-                contentValues.put("sdt", sdt);
-                contentValues.put("madonvicha", madonvicha);
-                contentValues.put("logo", logo);
-                if(db.insert("tb_donvi", null, contentValues) == -1){
-                    showToast("Thêm đơn vị thất bại");
-                }
-                else{
-                    showToast("Thêm đơn vị thành công");
-                    Intent intent = new Intent(addDonVi.this, DonViActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    showToast("Vui lòng kiểm tra lại dữ liệu");
                 }
             }
         });
@@ -206,6 +262,29 @@ public class addDonVi extends AppCompatActivity {
                 }
             }
     );
+
+    public String layerDrawableToBase64(Context context, int drawableId) {
+        // Lấy LayerDrawable từ resource ID
+        LayerDrawable layerDrawable = (LayerDrawable) context.getDrawable(drawableId);
+
+        // Tạo một bitmap với kích thước của LayerDrawable
+        int width = layerDrawable.getIntrinsicWidth();
+        int height = layerDrawable.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+
+        // Tạo một canvas với bitmap đó
+        Canvas canvas = new Canvas(bitmap);
+
+        // Vẽ LayerDrawable lên canvas
+        layerDrawable.setBounds(0, 0, width, height);
+        layerDrawable.draw(canvas);
+
+        // Chuyển đổi bitmap thành chuỗi base64
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
+    }
     public String vectorToBase64(Context context, int vectorResourceId) {
         VectorDrawable vectorDrawable = (VectorDrawable) context.getDrawable(vectorResourceId);
         Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),

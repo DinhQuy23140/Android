@@ -1,6 +1,8 @@
 package com.example.contact;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,13 +33,19 @@ import com.bumptech.glide.request.RequestOptions;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class editDonvi extends AppCompatActivity {
     EditText edtmadonvi, edttendonvi, edtdiachi, edtdienthoai, edtemail, edtwebsite, edtmadonvicha;
     ImageView imglogo;
     TextView btnsave, btncancel, btndelete;
     String endcodeedImage;
+
+    AutoCompleteTextView autoCompleteTextView;
+    ArrayList<String> list_madonvicha = new ArrayList<>();
+    ArrayAdapter<String> adapter;
     SQLiteDatabase db;
+    String logo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +66,29 @@ public class editDonvi extends AppCompatActivity {
         edtdienthoai = findViewById(R.id.tv_edit_sdt);
         edtemail = findViewById(R.id.tv_edit_email);
         edtwebsite = findViewById(R.id.tv_edit_website);
-        edtmadonvicha = findViewById(R.id.av_edit_madonvicha);
+        //edtmadonvicha = findViewById(R.id.av_edit_madonvicha);
         imglogo = findViewById(R.id.iv_edit_avatar);
         btnsave = findViewById(R.id.btn_edit_save);
         btncancel = findViewById(R.id.btn_edit_cancel);
         btndelete = findViewById(R.id.btn_edit_delete);
-
+        autoCompleteTextView = findViewById(R.id.av_edit_madonvicha);
+        Cursor cursor = db.rawQuery("SELECT madonvi FROM tb_donvi", null);
+        if (cursor.moveToFirst()) {
+            do {
+                String madonvi = cursor.getString(0);
+                list_madonvicha.add(madonvi);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, list_madonvicha);
+        autoCompleteTextView.setAdapter(adapter);
+        autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                autoCompleteTextView.showDropDown();
+            }
+        });
 
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("Donvi");
@@ -72,7 +99,7 @@ public class editDonvi extends AppCompatActivity {
             String dienthoai = bundle.getString("sdt");
             String email = bundle.getString("email");
             String website = bundle.getString("website");
-            String logo = bundle.getString("logo");
+            logo = bundle.getString("logo");
             String madonvicha = bundle.getString("madonvicha");
 
             edtmadonvi.setText(madonvi);
@@ -81,7 +108,8 @@ public class editDonvi extends AppCompatActivity {
             edtdienthoai.setText(dienthoai);
             edtemail.setText(email);
             edtwebsite.setText(website);
-            edtmadonvicha.setText(madonvicha);
+            //edtmadonvicha.setText(madonvicha);
+            autoCompleteTextView.setText(madonvicha);
             Bitmap bitmap = getImageView(logo);
             if (bitmap != null) {
                 //imglogo.setImageBitmap(bitmap);
@@ -104,6 +132,37 @@ public class editDonvi extends AppCompatActivity {
         });
 
         //save event
+
+        btnsave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String madonvi = edtmadonvi.getText().toString();
+                String tendonvi = edttendonvi.getText().toString();
+                String diachi = edtdiachi.getText().toString();
+                String dienthoai = edtdienthoai.getText().toString();
+                String email = edtemail.getText().toString();
+                String website = edtwebsite.getText().toString();
+                String madonvicha = autoCompleteTextView.getText().toString();
+                if(endcodeedImage != null){
+                    logo = endcodeedImage;
+                }
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("madonvi", madonvi);
+                contentValues.put("tendonvi", tendonvi);
+                contentValues.put("email", email);
+                contentValues.put("website", website);
+                contentValues.put("diachi", diachi);
+                contentValues.put("sdt", dienthoai);
+                contentValues.put("madonvicha", madonvicha);
+                contentValues.put("logo", logo);
+                db.update("tb_donvi", contentValues, "madonvi = ?", new String[]{madonvi});
+                Toast.makeText(editDonvi.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                Intent exit = new Intent(editDonvi.this, DonViActivity.class);
+                exit.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(exit);
+            }
+        });
 
         //cancel event
         btncancel.setOnClickListener(new View.OnClickListener() {

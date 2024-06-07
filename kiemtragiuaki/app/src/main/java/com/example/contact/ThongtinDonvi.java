@@ -1,12 +1,16 @@
 package com.example.contact;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,10 +23,16 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
+
 public class ThongtinDonvi extends AppCompatActivity {
 
     TextView tvmadonvi, tvtendonvi, tvdiachi, tvdienthoai, tvemail, tvwebsite, tvmadonvicha, tv_view_edit_donvi;
     ImageView ivlogo;
+    ListView lv_donvicon, lv_nhanviendonvi;
+    ArrayList<Donvi> listDonvicon = new ArrayList<>();
+    AdapterDonvi adapterDonvi;
+    SQLiteDatabase db;
 
 
     @Override
@@ -36,6 +46,8 @@ public class ThongtinDonvi extends AppCompatActivity {
             return insets;
         });
 
+        db = openOrCreateDatabase("contact.db", MODE_PRIVATE, null);
+
         tvmadonvi = findViewById(R.id.tv_madonvi);
         tvtendonvi = findViewById(R.id.tv_tendonvi);
         tvdiachi = findViewById(R.id.tv_diachi);
@@ -45,6 +57,9 @@ public class ThongtinDonvi extends AppCompatActivity {
         tvmadonvicha = findViewById(R.id.tv_madonvicha);
         ivlogo = findViewById(R.id.iv_logo);
         tv_view_edit_donvi = findViewById(R.id.tv_view_edit_donvi);
+        lv_donvicon = (ListView) findViewById(R.id.lv_donvicon);
+        adapterDonvi = new AdapterDonvi(this, listDonvicon);
+        lv_donvicon.setAdapter(adapterDonvi);
 
 
         Intent intent = getIntent();
@@ -57,7 +72,7 @@ public class ThongtinDonvi extends AppCompatActivity {
             String email = bundle.getString("email");
             String website = bundle.getString("website");
             String logo = bundle.getString("logo");
-            String madonvicha = bundle.getString("madonvicha");
+            String getmadonvicha = bundle.getString("madonvicha");
 
             tvmadonvi.setText(madonvi);
             tvtendonvi.setText(tendonvi);
@@ -65,13 +80,31 @@ public class ThongtinDonvi extends AppCompatActivity {
             tvdienthoai.setText(dienthoai);
             tvemail.setText(email);
             tvwebsite.setText(website);
-            tvmadonvicha.setText(madonvicha);
+            tvmadonvicha.setText(getmadonvicha);
 
             Bitmap imageBitmap = getImageView(logo);
             Glide.with(ThongtinDonvi.this)
                     .load(imageBitmap) // Replace with your image source
                     .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                     .into(ivlogo);
+
+            Cursor cursor = db.rawQuery("SELECT * FROM tb_donvi WHERE madonvicha = ?", new String[]{madonvi});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String madonvicon = cursor.getString(0);
+                    String tendonvicon = cursor.getString(1);
+                    String emaildonvicon = cursor.getString(2);
+                    String websitedonvicon = cursor.getString(3);
+                    String diachidonvicon = cursor.getString(4);
+                    String sdtdonvicon = cursor.getString(5);
+                    String madonvicha_ = cursor.getString(6);
+                    String logodonvicon = cursor.getString(7);
+                    Donvi donvicon = new Donvi(madonvicon, tendonvicon, emaildonvicon, websitedonvicon, diachidonvicon, sdtdonvicon, madonvicha_, logodonvicon);
+                    listDonvicon.add(donvicon);
+                }while (cursor.moveToNext());
+                cursor.close();
+                adapterDonvi.notifyDataSetChanged();
+            }
         }
 
         tv_view_edit_donvi.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +113,25 @@ public class ThongtinDonvi extends AppCompatActivity {
                 Intent intentViewEdit = new Intent(ThongtinDonvi.this, editDonvi.class);
                 intentViewEdit.putExtra("Donvi", bundle);
                 startActivity(intentViewEdit);
+            }
+        });
+
+        lv_donvicon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Donvi donvi = listDonvicon.get(position);
+                Intent viewDonvi = new Intent(ThongtinDonvi.this, ThongtinDonvi.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("madonvi", donvi.getMadonvi());
+                bundle.putString("tendonvi", donvi.getTendonvi());
+                bundle.putString("email", donvi.getEmail());
+                bundle.putString("website", donvi.getWebsite());
+                bundle.putString("diachi", donvi.getDiachi());
+                bundle.putString("sdt", donvi.getSdt());
+                bundle.putString("madonvicha", donvi.getMadonvicha());
+                bundle.putString("logo", donvi.getLogo());
+                viewDonvi.putExtra("Donvi", bundle);
+                startActivity(viewDonvi);
             }
         });
     }

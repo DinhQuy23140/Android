@@ -337,6 +337,7 @@
                         android:text="Danh sách đơn vị con trực thuộc" />
 
                     <ListView
+                        android:id="@+id/lv_donvicon"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp" />
@@ -350,6 +351,7 @@
                         android:text="Danh sách nhân viên trong đơn vị" />
 
                     <ListView
+                        android:id="@+id/lv_nhanviendonvi"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_marginTop="10dp" />

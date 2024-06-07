@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -50,8 +51,18 @@ public class DonViActivity extends AppCompatActivity {
             String sql = "CREATE TABLE IF NOT EXISTS tb_donvi (madonvi TEXT PRIMARY KEY, tendonvi TEXT, email TEXT, website TEXT, diachi TEXT, sdt TEXT, madonvicha TEXT, logo TEXT)";
             db.execSQL(sql);
         }catch (Exception e){
-            Log.e("Error", e.getMessage());
+            Log.e("Error","Error occurred: " + e.getMessage());
         }
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                // Xử lý sự kiện nhấn nút "Back" ở đây
+                Intent intent = new Intent(DonViActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, callback);
 
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,6 +107,13 @@ public class DonViActivity extends AppCompatActivity {
         });
         loadData();
     }
+
+    @Override
+    public void onBackPressed() {
+        // Xử lý sự kiện nhấn nút "Back" ở đây
+        super.onBackPressed(); // Gọi hàm này để thực hiện hành vi mặc định của nút "Back"
+    }
+
 
     public void loadData(){
         Cursor cursor = db.query("tb_donvi", null, null, null, null, null, null);

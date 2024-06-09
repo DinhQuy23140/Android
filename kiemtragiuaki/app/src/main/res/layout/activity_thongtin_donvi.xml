@@ -30,8 +30,9 @@
                     android:gravity="center"
                     android:paddingRight="15dp"
                     android:text="Sửa"
-                    android:textColor="#4092DD"
-                    android:textSize="16sp" />
+                    android:textColor="#7C5F5F"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <ImageView
@@ -49,7 +50,9 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="Tên đơn vị"
-                android:textSize="20sp" />
+                android:textColor="#7C5F5F"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -197,8 +200,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -222,8 +226,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -247,8 +252,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -272,8 +278,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -297,8 +304,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -323,8 +331,9 @@
                             android:layout_weight="1"
                             android:gravity="center|start"
                             android:text="TextView"
-                            android:textColor="#4092DD"
-                            android:textSize="18sp" />
+                            android:textColor="#7C5F5F"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -334,7 +343,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:text="Danh sách đơn vị con trực thuộc" />
+                        android:text="Danh sách đơn vị con trực thuộc"
+                        android:textColor="#7C5F5F"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <ListView
                         android:id="@+id/lv_donvicon"
@@ -348,7 +360,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:text="Danh sách nhân viên trong đơn vị" />
+                        android:text="Danh sách nhân viên trong đơn vị"
+                        android:textColor="#7C5F5F"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
                     <ListView
                         android:id="@+id/lv_nhanviendonvi"

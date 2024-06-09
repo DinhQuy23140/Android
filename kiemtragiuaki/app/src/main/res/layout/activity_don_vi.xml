@@ -8,57 +8,60 @@
     android:orientation="vertical"
     tools:context=".DonViActivity" >
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="Quản lý đơn vị"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/edt_search_donvi"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Tìm kiếm"
-            android:inputType="text" />
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Danh sách đơn vị"
+            android:textColor="#7C5F5F"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edt_search_donvi"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/border_layout"
+                android:ems="10"
+                android:hint="Tìm kiếm"
+                android:inputType="text"
+                android:paddingStart="15dp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_view_add"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center|right"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/rounded_corner"
+            app:srcCompat="@drawable/add_ic" />
 
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/btn_view_add"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center|right"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/rounded_corner"
-        app:srcCompat="@drawable/add_ic" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:text="Danh sách các đơn vị" />
 
     <ListView
         android:id="@+id/lv_donvi"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="20dp" />
 
 </LinearLayout>

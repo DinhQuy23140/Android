@@ -6,14 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".editDonvi">
-
+    tools:context=".ThongtinNhanvien">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
 
         <TextView
-            android:id="@+id/btn_edit_cancel"
+            android:id="@+id/btn_cancel_edit_nhanvien"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -25,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/btn_edit_save"
+            android:id="@+id/btn_edit_save_nhanvien"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -36,14 +35,16 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
-        android:id="@+id/iv_edit_avatar"
+        android:id="@+id/iv_edit_nv_avatar"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         app:srcCompat="@drawable/user_ic" />
 
     <ScrollView
@@ -63,23 +64,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView37"
-                    android:layout_width="140dp"
+                    android:id="@+id/textView9"
+                    android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
                     android:gravity="center|start"
-                    android:text="Mã đơn vị"
+                    android:paddingLeft="15dp"
+                    android:text="Mã nhân viên"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/tv_edit_madonvi"
+                    android:id="@+id/edt_view_nv_manhanvien"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -90,23 +90,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView38"
-                    android:layout_width="140dp"
+                    android:id="@+id/textView12"
+                    android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
                     android:gravity="center|start"
-                    android:text="Tên đơn vị"
+                    android:paddingLeft="15dp"
+                    android:text="Ten nhân viên"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/tv_edit_tendonvi"
+                    android:id="@+id/edt_view_nv_tennhanvien"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -117,23 +116,46 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView41"
-                    android:layout_width="140dp"
+                    android:id="@+id/textView18"
+                    android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
                     android:gravity="center|start"
+                    android:paddingLeft="15dp"
+                    android:text="Chức vụ"
+                    android:textSize="16sp" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/act_view_nv_chucvu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:background="#FFFFFF"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView19"
+                    android:layout_width="150dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center|start"
+                    android:paddingLeft="15dp"
                     android:text="Số điện thoại"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/tv_edit_sdt"
+                    android:id="@+id/edt_view_nv_sdt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -144,23 +166,22 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView42"
-                    android:layout_width="140dp"
+                    android:id="@+id/textView25"
+                    android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
                     android:gravity="center|start"
+                    android:paddingLeft="15dp"
                     android:text="Email"
                     android:textSize="16sp" />
 
                 <EditText
-                    android:id="@+id/tv_edit_email"
+                    android:id="@+id/edt_view_nv_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
                     android:layout_weight="1"
                     android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
+                    android:inputType="text" />
             </LinearLayout>
 
             <LinearLayout
@@ -171,92 +192,41 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/textView43"
-                    android:layout_width="140dp"
+                    android:id="@+id/textView31"
+                    android:layout_width="150dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
                     android:gravity="center|start"
-                    android:text="Website"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_edit_website"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="#FFFFFF"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView44"
-                    android:layout_width="140dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:gravity="center|start"
-                    android:text="Địa chỉ"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/tv_edit_diachi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:textColor="#7C5F5F" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="#FFFFFF"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/textView45"
-                    android:layout_width="140dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:gravity="center|start"
-                    android:text="Mã đơn vị cha"
+                    android:paddingLeft="15dp"
+                    android:text="Mã đơn vị"
                     android:textSize="16sp" />
 
                 <AutoCompleteTextView
-                    android:id="@+id/av_edit_madonvicha"
+                    android:id="@+id/act_view_madonvi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:layout_weight="1"
-                    android:textColor="#7C5F5F" />
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_edit_delete"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:backgroundTint="#FFFFFF"
-                android:gravity="center|start"
-                android:paddingLeft="15dp"
-                android:text="Xóa liên hệ"
-                android:textColor="#E13636"
-                android:textSize="16sp"
-                app:cornerRadius="0dp" />
+                android:background="#FFFFFF"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:id="@+id/delete_nhanvien"
+                    android:layout_width="130dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|start"
+                    android:paddingLeft="15dp"
+                    android:text="Xóa liên hệ"
+                    android:textColor="#E13636"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

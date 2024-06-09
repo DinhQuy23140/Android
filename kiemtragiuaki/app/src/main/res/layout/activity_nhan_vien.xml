@@ -12,50 +12,48 @@
         android:id="@+id/textView17"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="Quản lí danh sách nhân viên" />
+        android:text="Danh sách nhân viên"
+        android:textColor="#7C5F5F"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/textView18"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Tìm kiếm" />
-
         <EditText
             android:id="@+id/edt_search_nhanvien"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_weight="1"
+            android:background="@drawable/border_layout"
             android:ems="10"
-            android:inputType="text" />
+            android:hint="Tìm kiếm"
+            android:inputType="text"
+            android:paddingStart="15dp" />
 
     </LinearLayout>
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_view_add_nhanvien"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Thêm nhân viên" />
-
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="TextView" />
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center|right"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_corner"
+        app:srcCompat="@drawable/add_ic" />
 
     <ListView
         android:id="@+id/lv_nhanvien"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
     </ListView>
 </LinearLayout>

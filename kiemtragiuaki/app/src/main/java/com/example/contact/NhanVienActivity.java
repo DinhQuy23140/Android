@@ -76,7 +76,7 @@ public class NhanVienActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                searchNhanvien();
             }
 
             @Override
@@ -117,6 +117,7 @@ public class NhanVienActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         loadNhanvien();
     }
 
@@ -136,6 +137,29 @@ public class NhanVienActivity extends AppCompatActivity {
                 list.add(new Nhanvien(manv, hoten, chucvu, email, sdt,logo, madv));
             }while(cursor.moveToNext());
             Log.e("Size","Size" +  String.valueOf(list.size()));
+            cursor.close();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void searchNhanvien(){
+        list.clear();
+        String value = edt_search.getText().toString();
+        Cursor cursor = db.rawQuery("SELECT * FROM tb_nhanvien", null );
+        if(cursor.moveToFirst()){
+            do{
+                if(cursor.getString(1).contains(value)){
+                    String manv = cursor.getString(0);
+                    String hoten = cursor.getString(1);
+                    String chucvu = cursor.getString(2);
+                    String email = cursor.getString(3);
+                    String sdt = cursor.getString(4);
+                    String logo = cursor.getString(6);
+                    String madv = cursor.getString(5);
+                    list.add(new Nhanvien(manv, hoten, chucvu, email, sdt,logo, madv));
+                }
+            }
+            while(cursor.moveToNext());
             cursor.close();
             adapter.notifyDataSetChanged();
         }

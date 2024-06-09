@@ -120,7 +120,22 @@ public class ThongtinNhanvien extends AppCompatActivity {
             startActivity(view_edit);
         });
 
+        tv_inf_lvdonvi.setOnItemClickListener((parent, view, position, id) -> {
+           Donvi donvi = listDonvi.get(position);
+           Bundle getDonvi = new Bundle();
+           getDonvi.putString("madonvi", donvi.getMadonvi());
+           getDonvi.putString("tendonvi", donvi.getTendonvi());
+           getDonvi.putString("email", donvi.getEmail());
+           getDonvi.putString("website", donvi.getWebsite());
+           getDonvi.putString("diachi", donvi.getDiachi());
+           getDonvi.putString("sdt", donvi.getSdt());
+           getDonvi.putString("madonvicha", donvi.getMadonvicha());
+           getDonvi.putString("logo", donvi.getLogo());
 
+           Intent view_edit = new Intent(ThongtinNhanvien.this, ThongtinDonvi.class);
+           view_edit.putExtra("Donvi", getDonvi);
+           startActivity(view_edit);
+        });
     }
 
     private Bitmap getImageView(String encodeImage) {

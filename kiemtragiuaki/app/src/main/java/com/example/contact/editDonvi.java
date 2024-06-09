@@ -148,6 +148,16 @@ public class editDonvi extends AppCompatActivity {
                     logo = endcodeedImage;
                 }
 
+                Bundle infDonvi = new Bundle();
+                infDonvi.putString("madonvi", madonvi);
+                infDonvi.putString("tendonvi", tendonvi);
+                infDonvi.putString("email", email);
+                infDonvi.putString("website", website);
+                infDonvi.putString("diachi", diachi);
+                infDonvi.putString("sdt", dienthoai);
+                infDonvi.putString("madonvicha", madonvicha);
+                infDonvi.putString("logo", logo);
+
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("madonvi", madonvi);
                 contentValues.put("tendonvi", tendonvi);
@@ -157,10 +167,13 @@ public class editDonvi extends AppCompatActivity {
                 contentValues.put("sdt", dienthoai);
                 contentValues.put("madonvicha", madonvicha);
                 contentValues.put("logo", logo);
+
                 db.update("tb_donvi", contentValues, "madonvi = ?", new String[]{madonvi});
                 Toast.makeText(editDonvi.this, "Cập nhật thành công", Toast.LENGTH_SHORT).show();
-                Intent exit = new Intent(editDonvi.this, DonViActivity.class);
-                exit.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                Intent exit = new Intent(editDonvi.this, ThongtinDonvi.class);
+                exit.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                exit.putExtra("Donvi", infDonvi);
                 startActivity(exit);
             }
         });

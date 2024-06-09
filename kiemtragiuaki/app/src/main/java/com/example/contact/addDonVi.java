@@ -223,6 +223,13 @@ public class addDonVi extends AppCompatActivity {
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+    private boolean isPhoneNumberExists(SQLiteDatabase db, String phoneNumber) {
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM tb_donvi WHERE sdt = ?", new String[]{phoneNumber});
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count > 0;
+    }
 
     private String enCodeImage(Bitmap bitmap){
         //set with

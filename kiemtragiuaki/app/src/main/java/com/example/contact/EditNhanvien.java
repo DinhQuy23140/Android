@@ -20,6 +20,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -189,11 +190,21 @@ public class EditNhanvien extends AppCompatActivity {
                 String manhanvien = bundle.getString("manhanvien");
                 if(endcodeedImage != null){
                     avatar = endcodeedImage;
-                    Toast.makeText(this, avatar, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, avatar, Toast.LENGTH_SHORT).show();
                 }
                 else{
                     avatar = bundle.getString("avata");
                 }
+
+                Bundle toInfNhanvien = new Bundle();
+                toInfNhanvien.putString("manhanvien", edt_manhanvien.getText().toString());
+                toInfNhanvien.putString("hoten", edt_hoten.getText().toString());
+                toInfNhanvien.putString("chucvu", acv_chucvu.getText().toString());
+                toInfNhanvien.putString("email", edt_email.getText().toString());
+                toInfNhanvien.putString("sdt", edt_sdt.getText().toString());
+                toInfNhanvien.putString("madonvi", acv_madonvi.getText().toString());
+                toInfNhanvien.putString("avata", avatar);
+
                 ContentValues values = new ContentValues();
                 values.put("manhanvien", edt_manhanvien.getText().toString());
                 values.put("hoten", edt_hoten.getText().toString());
@@ -202,16 +213,32 @@ public class EditNhanvien extends AppCompatActivity {
                 values.put("sdt", edt_sdt.getText().toString());
                 values.put("madonvicha", acv_madonvi.getText().toString());
                 values.put("logo", avatar);
+
                 db.update("tb_nhanvien", values, "manhanvien = ?", new String[]{manhanvien});
                 showMessage("Cập nhật thành công");
-                Intent to_nhanvienActivity = new Intent(EditNhanvien.this, NhanVienActivity.class);
-                to_nhanvienActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                Intent to_nhanvienActivity = new Intent(EditNhanvien.this, ThongtinNhanvien.class);
+                to_nhanvienActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                to_nhanvienActivity.putExtra("Nhanvien", toInfNhanvien);
                 startActivity(to_nhanvienActivity);
             }
         });
 
         tv_delete.setOnClickListener(v -> {
-            
+            AlertDialog.Builder dialog = new AlertDialog.Builder(EditNhanvien.this);
+            dialog.setTitle("Xác nhận xóa");
+            dialog.setMessage("Bạn có chắc chắn muốn xóa nhân viên này không?");
+            dialog.setPositiveButton("Có", (dialog1, which) -> {
+                String manhanvien = bundle.getString("manhanvien");
+                if(db.delete("tb_nhanvien", "manhanvien = ?", new String[]{manhanvien}) > 0){
+                    showMessage("Xóa thành công");
+                    Intent to_nhanvienActivity = new Intent(EditNhanvien.this, NhanVienActivity.class);
+                    to_nhanvienActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(to_nhanvienActivity);
+                }
+            });
+            dialog.setNegativeButton("Không", (dialog12, which) -> {dialog12.dismiss();});
+            dialog.show();
         });
 
     }

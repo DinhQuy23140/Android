@@ -97,7 +97,7 @@ public class NhanVienActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Nhanvien nhanvien = list.get(position);
-                String message = nhanvien.getAvatar();
+                String manhanvien = nhanvien.getManhanvien();
                 String hoten = nhanvien.getHoten();
                 String chucvu = nhanvien.getChucvu();
                 String email = nhanvien.getEmail();
@@ -105,7 +105,7 @@ public class NhanVienActivity extends AppCompatActivity {
                 String avata = nhanvien.getAvatar();
                 String madv = nhanvien.getMadonvi();
                 Bundle bundle = new Bundle();
-                bundle.putString("message", message);
+                bundle.putString("manhanvien", manhanvien);
                 bundle.putString("hoten", hoten);
                 bundle.putString("chucvu", chucvu);
                 bundle.putString("email", email);
@@ -113,9 +113,8 @@ public class NhanVienActivity extends AppCompatActivity {
                 bundle.putString("avata", avata);
                 bundle.putString("madonvi", madv);
                 Intent intent = new Intent(NhanVienActivity.this, ThongtinNhanvien.class);
-                intent.putExtras(bundle);
+                intent.putExtra("Nhanvien", bundle);
                 startActivity(intent);
-
             }
         });
         loadNhanvien();

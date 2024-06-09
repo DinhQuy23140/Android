@@ -61,7 +61,6 @@ public class ThongtinDonvi extends AppCompatActivity {
         adapterDonvi = new AdapterDonvi(this, listDonvicon);
         lv_donvicon.setAdapter(adapterDonvi);
 
-
         Intent intent = getIntent();
         Bundle bundle = intent.getBundleExtra("Donvi");
         if (bundle != null) {

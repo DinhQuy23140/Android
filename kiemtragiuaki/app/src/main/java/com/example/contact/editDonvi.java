@@ -43,6 +43,7 @@ public class editDonvi extends AppCompatActivity {
 
     AutoCompleteTextView autoCompleteTextView;
     ArrayList<String> list_madonvicha = new ArrayList<>();
+    ArrayList<String> list_madonvicha_temp = new ArrayList<>();
     ArrayAdapter<String> adapter;
     SQLiteDatabase db;
     String logo;

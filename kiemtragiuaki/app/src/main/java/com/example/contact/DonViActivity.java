@@ -1,5 +1,6 @@
 package com.example.contact;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -22,6 +23,8 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class DonViActivity extends AppCompatActivity {
     ImageButton btn_view_add;
@@ -129,6 +132,7 @@ public class DonViActivity extends AppCompatActivity {
             Donvi  donvi = new Donvi(madonvi, tendonvi, email, website, diachi, dienthoai, madonvicha, logo);
             listDonVi.add(donvi);
         }
+        Collections.sort(listDonVi, (p1, p2) -> p1.getTendonvi().compareToIgnoreCase(p2.getTendonvi()));
         Log.d("LoadData", "Number of items loaded: " + listDonVi.size());
         adapterDonVi.notifyDataSetChanged();
         cursor.close();
@@ -152,6 +156,7 @@ public class DonViActivity extends AppCompatActivity {
                 listDonVi.add(donvi);
             }
         }
+        Collections.sort(listDonVi, (p1, p2) -> p1.getTendonvi().compareToIgnoreCase(p2.getTendonvi()));
         Log.d("LoadData", "Number of items loaded: " + listDonVi.size());
         adapterDonVi.notifyDataSetChanged();
         cursor.close();

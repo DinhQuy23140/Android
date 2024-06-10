@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,6 +32,7 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ThongtinDonvi extends AppCompatActivity {
 
@@ -40,6 +42,8 @@ public class ThongtinDonvi extends AppCompatActivity {
     LinearLayout to_call_app, to_sendmess, to_sendemail;
     ArrayList<Donvi> listDonvicon = new ArrayList<>();
     AdapterDonvi adapterDonvi;
+    AdapterNhanvien adapterNhanvien;
+    ArrayList<Nhanvien> listNhanvien = new ArrayList<>();
     SQLiteDatabase db;
     private static final int REQUEST_CALL_PERMISSION = 1;
 
@@ -69,6 +73,9 @@ public class ThongtinDonvi extends AppCompatActivity {
         to_call_app = findViewById(R.id.to_call_app);
         to_sendmess = findViewById(R.id.to_sendmess);
         to_sendemail = findViewById(R.id.to_sendemail);
+        lv_nhanviendonvi = (ListView) findViewById(R.id.lv_nhanviendonvi);
+        adapterNhanvien = new AdapterNhanvien(this, listNhanvien);
+        lv_nhanviendonvi.setAdapter(adapterNhanvien);
         lv_donvicon = (ListView) findViewById(R.id.lv_donvicon);
         adapterDonvi = new AdapterDonvi(this, listDonvicon);
         lv_donvicon.setAdapter(adapterDonvi);
@@ -113,9 +120,28 @@ public class ThongtinDonvi extends AppCompatActivity {
                     Donvi donvicon = new Donvi(madonvicon, tendonvicon, emaildonvicon, websitedonvicon, diachidonvicon, sdtdonvicon, madonvicha_, logodonvicon);
                     listDonvicon.add(donvicon);
                 }while (cursor.moveToNext());
+                Collections.sort(listDonvicon, (p1, p2) -> p1.getTendonvi().compareToIgnoreCase(p2.getTendonvi()));
                 cursor.close();
                 adapterDonvi.notifyDataSetChanged();
             }
+
+            Cursor cursor_nv = db.rawQuery("SELECT * FROM tb_nhanvien WHERE madonvicha = ?", new String[]{madonvi});
+            if(cursor_nv.moveToFirst()){
+                do{
+                    String manv = cursor_nv.getString(0);
+                    String hotennv = cursor_nv.getString(1);
+                    String chucvunv = cursor_nv.getString(2);
+                    String emailnv = cursor_nv.getString(3);
+                    String sdtnv = cursor_nv.getString(4);
+                    String madv = cursor_nv.getString(5);
+                    String logonv = cursor_nv.getString(6);
+                    listNhanvien.add(new Nhanvien(manv, hotennv, chucvunv, emailnv, sdtnv,logonv, madv));
+                }while(cursor_nv.moveToNext());
+                Log.e("Size","Size" +  String.valueOf(listNhanvien.size()));
+            }
+            Collections.sort(listNhanvien, (p1, p2) -> p1.getHoten().compareToIgnoreCase(p2.getHoten()));
+            cursor_nv.close();
+            adapterNhanvien.notifyDataSetChanged();
         }
 
         tv_view_edit_donvi.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +169,34 @@ public class ThongtinDonvi extends AppCompatActivity {
                 bundle.putString("logo", donvi.getLogo());
                 viewDonvi.putExtra("Donvi", bundle);
                 startActivity(viewDonvi);
+            }
+        });
+
+        lv_nhanviendonvi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Nhanvien nhanvien = listNhanvien.get(position);
+                Intent viewNhanvien = new Intent(ThongtinDonvi.this, ThongtinNhanvien.class);
+                Bundle infNhanvien = new Bundle();
+                String manhanvien = nhanvien.getManhanvien();
+                String hoten = nhanvien.getHoten();
+                String chucvu = nhanvien.getChucvu();
+                String email = nhanvien.getEmail();
+                String sdt = nhanvien.getSdt();
+                String avata = nhanvien.getAvatar();
+                String madv = nhanvien.getMadonvi();
+                Bundle bundle = new Bundle();
+                infNhanvien.putString("manhanvien", manhanvien);
+                infNhanvien.putString("hoten", hoten);
+                infNhanvien.putString("chucvu", chucvu);
+                infNhanvien.putString("email", email);
+                infNhanvien.putString("sdt", sdt);
+                infNhanvien.putString("avata", avata);
+                infNhanvien.putString("madonvi", madv);
+                Intent intent = new Intent(ThongtinDonvi.this, ThongtinNhanvien.class);
+                intent.putExtra("Nhanvien", infNhanvien);
+                startActivity(intent);
+
             }
         });
 

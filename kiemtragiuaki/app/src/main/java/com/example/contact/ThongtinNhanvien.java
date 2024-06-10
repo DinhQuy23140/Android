@@ -1,18 +1,24 @@
 package com.example.contact;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -32,6 +38,9 @@ public class ThongtinNhanvien extends AppCompatActivity {
     AdapterDonvi adapter;
     SQLiteDatabase db;
     Bundle bundle;
+
+    LinearLayout to_call_app, to_sendmess, to_sendemail;
+    private static final int REQUEST_CALL_PERMISSION = 1;
 
 
     @Override
@@ -54,6 +63,9 @@ public class ThongtinNhanvien extends AppCompatActivity {
         tv_madonvi = findViewById(R.id.tv_inf_madonvi);
         tv_to_edit_nhanvien = findViewById(R.id.tv_view_edit_nhanvien);
         tv_inf_lvdonvi = findViewById(R.id.tv_inf_lvdonvi);
+        to_call_app = findViewById(R.id.to_call_app);
+        to_sendmess = findViewById(R.id.to_senmess);
+        to_sendemail = findViewById(R.id.to_sendemail);
         adapter = new AdapterDonvi(this, listDonvi);
         tv_inf_lvdonvi.setAdapter(adapter);
 
@@ -136,6 +148,22 @@ public class ThongtinNhanvien extends AppCompatActivity {
            view_edit.putExtra("Donvi", getDonvi);
            startActivity(view_edit);
         });
+
+        to_call_app.setOnClickListener(v -> {
+            String phoneNumber = tv_sdt.getText().toString();
+            makePhoneCall(phoneNumber);
+        });
+        to_sendmess.setOnClickListener(v -> {
+            String phoneNumber = tv_sdt.getText().toString();
+            String message = "";
+            openMessagingApp(phoneNumber, message);
+        });
+        to_sendemail.setOnClickListener(v -> {
+            String emailAddress = tv_email.getText().toString();
+            String subject = "";
+            String body = "";
+            openEmailApp(emailAddress, subject, body);
+        });
     }
 
     private Bitmap getImageView(String encodeImage) {
@@ -145,6 +173,33 @@ public class ThongtinNhanvien extends AppCompatActivity {
         }
         byte[] bytes = Base64.decode(encodeImage, Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+    private void makePhoneCall(String phoneNumber) {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CALL_PERMISSION);
+        } else {
+            String dial = "tel:" + phoneNumber;
+            startActivity(new Intent(Intent.ACTION_CALL, Uri.parse(dial)));
+        }
+    }
+    private void openMessagingApp(String phoneNumber, String message) {
+        // Create an intent to open the messaging app with pre-filled phone number and message text
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("smsto:" + phoneNumber)); // Use "sms:" or "smsto:"
+        intent.putExtra("sms_body", message);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+    private void openEmailApp(String emailAddress, String subject, String body) {
+        // Create an intent to open the email app with pre-filled email address, subject, and body
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:" + emailAddress));
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, body);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 }

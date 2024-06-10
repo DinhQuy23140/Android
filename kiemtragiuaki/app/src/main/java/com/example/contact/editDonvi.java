@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -190,13 +191,20 @@ public class editDonvi extends AppCompatActivity {
         btndelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int n = db.delete("tb_donvi", "madonvi = ?", new String[]{edtmadonvi.getText().toString()});
-                if (n > 0) {
-                    Toast.makeText(editDonvi.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
-                    Intent viewDonvi = new Intent(editDonvi.this, DonViActivity.class);
-                    viewDonvi.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(viewDonvi);
-                }
+                AlertDialog.Builder dialog = new AlertDialog.Builder(editDonvi.this);
+                dialog.setTitle("Xác nhận xóa");
+                dialog.setMessage("Bạn có chắc chắn muốn xóa nhân viên này không?");
+                dialog.setPositiveButton("Có", (dialog1, which) -> {
+                    int n = db.delete("tb_donvi", "madonvi = ?", new String[]{edtmadonvi.getText().toString()});
+                    if (n > 0) {
+                        Toast.makeText(editDonvi.this, "Xóa thành công", Toast.LENGTH_SHORT).show();
+                        Intent viewDonvi = new Intent(editDonvi.this, DonViActivity.class);
+                        viewDonvi.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(viewDonvi);
+                    }
+                });
+                dialog.setNegativeButton("Không", (dialog12, which) -> {dialog12.dismiss();});
+                dialog.show();
             }
         });
 

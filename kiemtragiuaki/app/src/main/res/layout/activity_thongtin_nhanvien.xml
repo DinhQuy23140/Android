@@ -51,6 +51,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/to_senmess"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -77,6 +78,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/to_call_app"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
@@ -129,6 +131,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/to_sendemail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"

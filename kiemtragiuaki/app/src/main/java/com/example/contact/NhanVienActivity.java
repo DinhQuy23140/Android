@@ -22,6 +22,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NhanVienActivity extends AppCompatActivity {
 
@@ -137,9 +138,10 @@ public class NhanVienActivity extends AppCompatActivity {
                 list.add(new Nhanvien(manv, hoten, chucvu, email, sdt,logo, madv));
             }while(cursor.moveToNext());
             Log.e("Size","Size" +  String.valueOf(list.size()));
-            cursor.close();
-            adapter.notifyDataSetChanged();
         }
+        Collections.sort(list, (p1, p2) -> p1.getHoten().compareToIgnoreCase(p2.getHoten()));
+        cursor.close();
+        adapter.notifyDataSetChanged();
     }
 
     private void searchNhanvien(){
@@ -160,9 +162,10 @@ public class NhanVienActivity extends AppCompatActivity {
                 }
             }
             while(cursor.moveToNext());
-            cursor.close();
-            adapter.notifyDataSetChanged();
         }
+        Collections.sort(list, (p1, p2) -> p1.getHoten().compareToIgnoreCase(p2.getHoten()));
+        cursor.close();
+        adapter.notifyDataSetChanged();
     }
 
 }
